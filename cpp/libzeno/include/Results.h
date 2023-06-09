@@ -99,6 +99,8 @@ class Results {
   bool resultsZenoCompiled;
   bool resultsInteriorCompiled;
   bool formResultsCompiled;
+
+  long long unsigned int totalSteps; // Added by mvk1-nist
 };
 
 }

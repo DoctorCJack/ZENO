@@ -1104,6 +1104,8 @@ printResults(Results const & results,
   
   if (results.resultsZenoCompiled) {
 
+    printf("Total number of steps taken: %llu\n\n", results.totalSteps); // Added by mvk1-nist
+
     printScalar(results.capacitance,
 		csvItems);
 

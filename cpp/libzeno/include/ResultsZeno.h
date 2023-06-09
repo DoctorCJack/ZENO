@@ -95,6 +95,8 @@ public:
   std::vector<Vector3<double> > const * getPoints() const;
   std::vector<Vector3<char> > const * getCharges() const;
 
+  long long unsigned int totalSteps; // Added by mvk1-nist
+
 private:
   void updateVariance(int threadNum,
 		      double hitMissData,

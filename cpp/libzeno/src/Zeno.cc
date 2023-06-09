@@ -568,6 +568,8 @@ Zeno::doWalkOnSpheresThread(ParametersWalkOnSpheres const * parameters,
     walker.walk(&hitObject, &numSteps,
 		&startPoint, &endPoint);
 
+    resultsZeno->totalSteps += numSteps; // Added by mvk1-nist
+
     if (hitObject) {
       resultsZeno->recordHit(threadNum, 
 			     startPoint, endPoint,
