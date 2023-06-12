@@ -144,6 +144,13 @@ WalkerExterior<T,
 						&minDistanceSqr);
 
     T minDistance = std::sqrt(minDistanceSqr);
+    
+    //Enlargening Variable
+    T enlarge = 0.1*minDistance;
+    minDistance += enlarge;
+
+    // Add cases here
+
 
     if (minDistance < shellThickness) {
       //walker is absorbed

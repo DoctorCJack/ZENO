@@ -218,7 +218,28 @@ Triangle<T>::getVolume() const {
 template <class T>
 T
 Triangle<T>::getDistanceTo(Vector3<T> const & point) const {
-  return sqrt(getDistanceSqrTo(point));
+  T dist = sqrt(getDistanceSqrTo(point));
+  if (dist == 0) {
+    return dist;
+
+  } else {
+    
+    //Parity Check
+    Vector3<T> E0 = v2 - v1;
+    Vector3<T> E1 = v3 - v1;
+    
+    Vector3<T> N = E0.cross(E1);
+    Vector3<T> Nn = N/sqrt(N.dot(N));
+    T par = (point - v1).dot(Nn);
+
+    if (par >= 0) { // par > 0 || par == 0
+      return dist;
+    } else { // par < 0
+      return -1 * dist;
+    }
+
+  }
+
 }
 
 /// Returns the distance squared from the point to the triangle.
