@@ -140,16 +140,18 @@ WalkerExterior<T,
 
     T minDistanceSqr = 0;
 
-    nearestSurfacePointFinder->findNearestPoint(position,
+    nearestSurfacePointFinder->findNearestPointSigned(position,
 						&minDistanceSqr);
 
     T minDistance = std::sqrt(minDistanceSqr);
     
     //Enlargening Variable
-    T enlarge = 0.1*minDistance;
-    minDistance += enlarge;
+    T delta = 0.1*minDistance;
+    minDistance += delta;
 
-    // Add cases here
+    // Have to add overshoot cases here
+    // Currently only checks undershoot and interior case
+    // Overshoot should be negligable
 
 
     if (minDistance < shellThickness) {

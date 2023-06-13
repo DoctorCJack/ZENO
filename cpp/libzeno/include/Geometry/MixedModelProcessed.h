@@ -73,6 +73,9 @@ class MixedModelProcessed {
   void findNearestPoint(Vector3<T> const & queryPoint,
 			T * minDistanceSqr) const;
 
+  void findNearestPointSigned(Vector3<T> const & queryPoint,
+			T * minDistanceSqr) const;
+
   bool contains(Vector3<T> const & queryPoint) const;
 
   Vector3<T> findFarthestPoint(Vector3<T> const & queryPoint) const;
@@ -184,6 +187,36 @@ MixedModelProcessed<T>::findNearestPoint(Vector3<T> const & queryPoint,
   Triangle<T> const * nearestTriangle = NULL;
 
   aabbTreeTriangles.findNearestObject(queryPoint,
+				      &nearestTriangle, 
+				      minDistanceSqr);
+}
+
+/// Finds the nearest point on the model to the query point using Signed Distance.  Computes the
+/// distance squared to the point.
+///
+template <class T>
+void
+MixedModelProcessed<T>::findNearestPointSigned(Vector3<T> const & queryPoint,
+					 T * minDistanceSqr) const {
+  assert(preprocessed);
+
+  *minDistanceSqr = std::numeric_limits<T>::infinity();
+  
+  Sphere<T> const * nearestSphere = NULL;
+  
+  aabbTreeSpheres.findNearestObjectSigned(queryPoint,
+ 				    &nearestSphere, 
+				    minDistanceSqr);
+
+  Cuboid<T> const * nearestCuboid = NULL;
+
+  aabbTreeCuboids.findNearestObjectSigned(queryPoint,
+				    &nearestCuboid, 
+				    minDistanceSqr);
+
+  Triangle<T> const * nearestTriangle = NULL;
+
+  aabbTreeTriangles.findNearestObjectSigned(queryPoint,
 				      &nearestTriangle, 
 				      minDistanceSqr);
 }

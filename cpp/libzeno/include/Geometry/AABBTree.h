@@ -86,6 +86,11 @@ class AABBTree {
 			 ObjectT const * * nearestObject, 
 			 double * minDistanceSqr) const;
 
+  void findNearestObjectSigned(Vector3<double> const & queryPoint,
+			 ObjectT const * * nearestObject, 
+			 double * minDistanceSqr) const;
+
+
   bool objectsContain(Vector3<double> const & queryPoint) const;
 
   bool isEmpty() const;
@@ -283,6 +288,92 @@ AABBTree<ObjectT>::splitAABBNode(aabbTree_size_type nodeIndex,
 template <class ObjectT>
 void
 AABBTree<ObjectT>::findNearestObject(Vector3<double> const & queryPoint,
+				     ObjectT const * * nearestObject, 
+				     double * minDistanceSqr) const {
+
+  if (aabbTree.empty()) {
+    return;
+  }
+  
+  struct NodeToCheck {
+    NodeToCheck(aabbTree_size_type nodeIndex,
+		double distanceSqrToNode)
+      : nodeIndex(nodeIndex),
+	distanceSqrToNode(distanceSqrToNode) {}
+    
+    aabbTree_size_type nodeIndex;
+    
+    double distanceSqrToNode;
+  };
+
+  std::vector<NodeToCheck> nodesToCheck;
+
+  nodesToCheck.emplace_back(0,
+			    aabbTree.at(0).aabb.getDistanceSqrTo(queryPoint));
+  
+  while(!nodesToCheck.empty()) {
+    aabbTree_size_type nodeIndex = nodesToCheck.back().nodeIndex;
+    double distanceSqrToNode     = nodesToCheck.back().distanceSqrToNode;
+
+    nodesToCheck.pop_back();
+
+    if (*minDistanceSqr < distanceSqrToNode) {
+      continue;
+    }
+
+    objects_size_type objectsBegin = aabbTree.at(nodeIndex).objectsBegin;
+    objects_size_type objectsEnd   = aabbTree.at(nodeIndex).objectsEnd;
+
+    if (objectsBegin == objectsEnd) {
+      // interior node
+
+      aabbTree_size_type lowChildIndex  = nodeIndex * 2 + 1;
+      aabbTree_size_type highChildIndex = nodeIndex * 2 + 2;
+
+      double distanceSqrToLowChild =
+	aabbTree.at(lowChildIndex).aabb.getDistanceSqrTo(queryPoint);
+
+      double distanceSqrToHighChild =
+	aabbTree.at(highChildIndex).aabb.getDistanceSqrTo(queryPoint);
+
+      if (distanceSqrToLowChild < distanceSqrToHighChild) {
+	// check low child first
+	nodesToCheck.emplace_back(highChildIndex, distanceSqrToHighChild);
+	nodesToCheck.emplace_back(lowChildIndex, distanceSqrToLowChild);
+      }
+      else {
+	// check high child first
+	nodesToCheck.emplace_back(lowChildIndex, distanceSqrToLowChild);
+	nodesToCheck.emplace_back(highChildIndex, distanceSqrToHighChild);
+      }
+    }
+    else {
+      // leaf node
+
+      for (objects_size_type objectIndex = objectsBegin;
+	   objectIndex < objectsEnd;
+	   ++objectIndex) {
+
+	double distanceSqrToObject =
+	  sortedObjects->at(objectIndex).getDistanceSqrTo(queryPoint);
+
+	if (distanceSqrToObject < *minDistanceSqr) {
+	  *nearestObject  = &(sortedObjects->at(objectIndex));
+	  *minDistanceSqr = distanceSqrToObject;
+	}
+      }
+    }
+  }
+}
+
+/// Searches the objects for the nearest to the given query point using the signed Distance.
+/// Computes both the nearest object and its distance squared.
+/// If no objects are found that are nearer than the initial minDistanceSqr,
+/// nearestObject and minDistanceSqr are not modified.
+///
+template <class ObjectT>
+void
+AABBTree<ObjectT>::findNearestObjectSigned(Vector3<double> const & queryPoint, 
 				     ObjectT const * * nearestObject, 
 				     double * minDistanceSqr) const {
 
