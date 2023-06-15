@@ -145,15 +145,6 @@ WalkerExterior<T,
 
     T minDistance = std::sqrt(minDistanceSqr);
     
-    //Enlargening Variable
-    T delta = 0.1*minDistance;
-    minDistance += delta;
-
-    // Have to add overshoot cases here
-    // Currently only checks undershoot and interior case
-    // Overshoot should be negligable
-
-
     if (minDistance < shellThickness) {
       //walker is absorbed
       
@@ -162,6 +153,16 @@ WalkerExterior<T,
       
       return;
     }
+
+    //Enlargening Variable
+    T delta = shellThickness; // Constant case
+//    T delta = 0.1*minDistance; // Proportional case
+//    T delta = /*random number TBD*/; // Random case
+    minDistance += delta;
+
+    // Have to add overshoot cases here
+    // Currently only checks undershoot and interior case
+    // Overshoot should be negligable
 
     (*numSteps)++;
 
