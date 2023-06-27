@@ -343,7 +343,7 @@ int main(int argc, char **argv) {
     }
 
     perRunCsvItemsList.emplace_back();
-    
+
     int runZenoStatus =
       runZeno(parametersLocal,
 	      &parametersWalkOnSpheres,
@@ -748,7 +748,7 @@ runZeno(ParametersLocal const & parametersLocal,
 	double broadcastTime,
 	MixedModel<double> * model,
 	CsvItems * csvItems) {
-  
+
   Zeno zeno(model);
 
   if (parametersLocal.getPrintBenchmarks() && 
@@ -1101,14 +1101,17 @@ printResults(Results const & results,
 
     std::cout << std::endl;
   }
-  
+
   if (results.resultsZenoCompiled) {
 
-    printExactScalar("Total steps",
-                     "num_steps",
-                     "steps",
-                     results.totalSteps,
-                     csvItems); // Added by mvk1-nist
+    printScalar(results.totalSteps,
+                csvItems); // Added by mvk1-nist
+
+    printScalar(results.hitSteps,
+                csvItems); // Added by mvk1-nist
+
+    printScalar(results.missSteps,
+                csvItems); // Added by mvk1-nist
 
     printScalar(results.capacitance,
 		csvItems);

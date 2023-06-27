@@ -128,6 +128,12 @@ ResultsCompiler::compile(ResultsZeno const * resultsZeno,
     results->w.set("w", "w", w,
 		   Units::getName(parameters->getLengthScaleUnit()));
 
+    results->totalSteps = computeTotalSteps(resultsZeno->getTotalSteps()); // Added by mvk1-nist
+
+    results->hitSteps = computeHitSteps(resultsZeno->getHitSteps()); // Added by mvk1-nist
+
+    results->missSteps = computeMissSteps(resultsZeno->getMissSteps()); // Added by mvk1-nist
+
     results->capacitance =
       computeCapacitance(t,
 			 resultsZeno->getBoundingSphere().getRadius());
@@ -283,6 +289,45 @@ ResultsCompiler::compile(ResultsZeno const * resultsZeno,
     results->formResultsCompiled = true;
   }
 }
+
+Result<Uncertain<double> > 
+ResultsCompiler::
+computeTotalSteps(Uncertain<double> totalStepCount) const {
+
+  Result<Uncertain<double> >
+    result("Total steps",
+           "total_steps",
+            totalStepCount,
+            "steps");
+  
+  return result;
+} // Added by mvk1-nist
+
+Result<Uncertain<double> > 
+ResultsCompiler::
+computeHitSteps(Uncertain<double> hitStepCount) const {
+
+  Result<Uncertain<double> >
+    result("Hit steps",
+           "hit_steps",
+            hitStepCount,
+            "steps");
+  
+  return result;
+} // Added by mvk1-nist
+
+Result<Uncertain<double> > 
+ResultsCompiler::
+computeMissSteps(Uncertain<double> missStepCount) const {
+
+  Result<Uncertain<double> >
+    result("Miss steps",
+           "miss_steps",
+            missStepCount,
+            "steps");
+  
+  return result;
+} // Added by mvk1-nist
 
 Result<Uncertain<double> > 
 ResultsCompiler::

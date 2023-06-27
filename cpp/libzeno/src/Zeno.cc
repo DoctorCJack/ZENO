@@ -115,7 +115,7 @@ Zeno::doWalkOnSpheres(ParametersWalkOnSpheres * parametersWalkOnSpheres,
 	computeNumInProcess(mpiSize, 
 			    mpiRank, 
 			    parametersWalkOnSpheres->getTotalNumWalks());
-  
+
   std::vector<RandomNumberGenerator> threadRNGs;
 
   setupRNGs(parametersWalkOnSpheres->getNumThreads(),
@@ -127,7 +127,7 @@ Zeno::doWalkOnSpheres(ParametersWalkOnSpheres * parametersWalkOnSpheres,
   resultsZeno = nullptr;
 
   initializeTimer.stop();
-  
+
   getWalkOnSpheresResults(numWalksInProcess,			
 			  *parametersWalkOnSpheres,
 			  *parametersResults,
@@ -568,15 +568,15 @@ Zeno::doWalkOnSpheresThread(ParametersWalkOnSpheres const * parameters,
     walker.walk(&hitObject, &numSteps,
 		&startPoint, &endPoint);
 
-    resultsZeno->totalSteps += numSteps; // Added by mvk1-nist
 
     if (hitObject) {
       resultsZeno->recordHit(threadNum, 
 			     startPoint, endPoint,
-			     randomNumberGenerator);
+			     randomNumberGenerator,
+                 numSteps); // Modified by mvk1-nist
     }
     else {
-      resultsZeno->recordMiss(threadNum);
+      resultsZeno->recordMiss(threadNum, numSteps); // Modified by mvk1-nist
     }
 
     if (parameters->getMaxRunTimeWasSet() &&

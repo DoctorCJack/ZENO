@@ -155,9 +155,10 @@ WalkerExterior<T,
     }
 
     //Enlargening Variable
-    T delta = shellThickness; // Constant case
-//    T delta = 0.1 * minDistance; // Proportional case
-//    T delta = randomNumberGenerator->getRandInRange(-1 * shellThickness, shellThickness); // Random case
+    T delta; // Added by mvk1-nist
+    delta = shellThickness; // Constant case
+//    delta = 0.1 * minDistance; // Proportional case
+//    delta = randomNumberGenerator->getRandInRange(-1 * shellThickness, shellThickness); // Random case
     minDistance += delta;
 
     // Have to add overshoot cases here

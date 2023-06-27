@@ -70,9 +70,10 @@ public:
   void recordHit(int threadNum,
 		 Vector3<double> const & startPoint,
 		 Vector3<double> const & endPoint,
-		 RandomNumberGenerator * randomNumberGenerator);
+		 RandomNumberGenerator * randomNumberGenerator,
+         double hitStepCount); // Modified by mvk1-nist
 
-  void recordMiss(int threadNum);
+  void recordMiss(int threadNum, double missSteps); // Modified by mvk1-nist
 
   void reduce();
 
@@ -95,7 +96,9 @@ public:
   std::vector<Vector3<double> > const * getPoints() const;
   std::vector<Vector3<char> > const * getCharges() const;
 
-  long long unsigned int totalSteps; // Added by mvk1-nist
+  Uncertain<double> getTotalSteps() const; // Added by mvk1-nist
+  Uncertain<double> getHitSteps() const; // Added by mvk1-nist
+  Uncertain<double> getMissSteps() const; // Added by mvk1-nist
 
 private:
   void updateVariance(int threadNum,
@@ -103,7 +106,10 @@ private:
 		      Vector3<double> const & KPlusData, 
 		      Vector3<double> const & KMinusData,
 		      Matrix3x3<double> const & VPlusData, 
-		      Matrix3x3<double> const & VMinusData);
+		      Matrix3x3<double> const & VMinusData,
+              double totalStepData, // Modified by mvk1-nist
+              double hitMissStepData, //  Modified by mvk1-nist
+              bool hitNotMiss); // Modified by mvk1-nist
 
   template <class T>
   void updateItemVariance(T const & data,
@@ -165,6 +171,24 @@ private:
 
   bool reduced;
   bool hitPointsGathered;
+
+  double * totalSteps; // Added by mvk1-nist
+  double * hitSteps;// Added by mvk1-nist
+  double * missSteps;// Added by mvk1-nist
+
+  double * totalStepsMean; // Added by mvk1-nist
+  double * totalStepsM2; // Added by mvk1-nist
+  double * hitStepsMean; // Added by mvk1-nist
+  double * hitStepsM2; // Added by mvk1-nist
+  double * missStepsMean; // Added by mvk1-nist
+  double * missStepsM2; // Added by mvk1-nist
+
+  double totalStepsReduced; // Added by mvk1-nist
+  double totalStepsVarianceReduced; // Added by mvk1-nist
+  double hitStepsReduced; // Added by mvk1-nist
+  double hitStepsVarianceReduced; // Added by mvk1-nist
+  double missStepsReduced; // Added by mvk1-nist
+  double missStepsVarianceReduced; // Added by mvk1-nist
 };
 
 /// Record a hit from the given thread number of a walk from the given start
@@ -177,7 +201,8 @@ ResultsZeno::
 recordHit(int threadNum,
 	  Vector3<double> const & startPoint,
 	  Vector3<double> const & endPoint,
-	  RandomNumberGenerator * randomNumberGenerator) {
+	  RandomNumberGenerator * randomNumberGenerator,
+      double hitStepCount) { // Modified by mvk1-nist
 
   assert(threadNum >= 0 && threadNum < numThreads);
 
@@ -229,12 +254,18 @@ recordHit(int threadNum,
   VPlus[threadNum]  += VPlusData;
   VMinus[threadNum] += VMinusData;
 
+  totalSteps[threadNum] += hitStepCount; // Added by mvk1-nist
+  hitSteps[threadNum] += hitStepCount; // Added by mvk1-nist
+
   updateVariance(threadNum,
 		 hitMissData,
 		 KPlusData, 
 		 KMinusData,
 		 VPlusData, 
-		 VMinusData);
+		 VMinusData,
+         hitStepCount, // Modified by mvk1-nist
+         hitStepCount, // Modified by mvk1-nist
+         true); // Modified by mvk1-nist
 
   if (saveHitPoints) {
     hitPointsGathered = false;

@@ -100,7 +100,9 @@ class Results {
   bool resultsInteriorCompiled;
   bool formResultsCompiled;
 
-  long long unsigned int totalSteps; // Added by mvk1-nist
+  Result<Uncertain<double> > totalSteps; // Added by mvk1-nist
+  Result<Uncertain<double> > hitSteps; // Added by mvk1-nist
+  Result<Uncertain<double> > missSteps; // Added by mvk1-nist
 };
 
 }

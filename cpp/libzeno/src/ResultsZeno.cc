@@ -86,7 +86,34 @@ ResultsZeno(Sphere<double> const & boundingSphere,
     gatheredPoints(),
     gatheredCharges(),
     reduced(true),
-    hitPointsGathered(true) {
+    hitPointsGathered(true),
+    totalSteps(NULL), //Added by mvk1-nist
+    hitSteps(NULL), // Added by mvk1-nist
+    missSteps(NULL), // Added by mvk1-nist
+    totalStepsMean(NULL), // Added by mvk1-nist
+    totalStepsM2(NULL), // Added by mvk1-nist
+    hitStepsMean(NULL), // Added by mvk1-nist
+    hitStepsM2(NULL), // Added by mvk1-nist
+    missStepsMean(NULL), // Added by mvk1-nist
+    missStepsM2(NULL), // Added by mvk1-nist
+    totalStepsReduced(0), // Added by mvk1-nist
+    totalStepsVarianceReduced(0), // Added by mvk1-nist
+    hitStepsReduced(0), // Added by mvk1-nist
+    hitStepsVarianceReduced(0), // Added by mvk1-nist
+    missStepsReduced(0), // Added by mvk1-nist
+    missStepsVarianceReduced(0) { // Added by mvk1-nist
+
+  totalSteps = new double[numThreads]; // Added by mvk1-nist
+  hitSteps = new double[numThreads]; // Added by mvk1-nist
+  missSteps = new double[numThreads]; // Added by mvk1-nist
+
+  totalStepsMean = new double[numThreads]; // Added by mvk1-nist
+  totalStepsM2 = new double[numThreads]; // Added by mvk1-nist
+  hitStepsMean = new double[numThreads]; // Added by mvk1-nist
+  hitStepsM2 = new double[numThreads]; // Added by mvk1-nist
+  missStepsMean = new double[numThreads]; // Added by mvk1-nist
+  missStepsM2 = new double[numThreads]; // Added by mvk1-nist
+
 
   numWalks = new double[numThreads];
 
@@ -113,6 +140,19 @@ ResultsZeno(Sphere<double> const & boundingSphere,
   VMinusM2 = new Matrix3x3<double>[numThreads];
 
   for (int threadNum = 0; threadNum < numThreads; threadNum++) {
+    totalSteps[threadNum] = 0; // Added by mvk1-nist
+    hitSteps[threadNum] = 0; // Added by mvk1-nist
+    missSteps[threadNum] = 0; // Added by mvk1-nist
+
+    totalStepsMean[threadNum] = 0; // Added by mvk1-nist
+    totalStepsM2[threadNum] = 0; // Added by mvk1-nist
+
+    hitStepsMean[threadNum] = 0; // Added by mvk1-nist
+    hitStepsM2[threadNum] = 0; // Added by mvk1-nist
+
+    missStepsMean[threadNum] = 0; // Added by mvk1-nist
+    missStepsM2[threadNum] = 0; // Added by mvk1-nist
+
     numWalks[threadNum] = 0;
 
     hitMissMean[threadNum] = 0;
@@ -146,6 +186,10 @@ ResultsZeno(Sphere<double> const & boundingSphere,
 
 ResultsZeno::
 ~ResultsZeno() {
+  delete [] totalSteps; // Added by mvk1-nist
+  delete [] hitSteps; // Added by mvk1-nist
+  delete [] missSteps; // Added by mvk1-nist
+
   delete [] numWalks;
 
   delete [] hitMissMean;
@@ -178,7 +222,7 @@ ResultsZeno::
 ///
 void 
 ResultsZeno::
-recordMiss(int threadNum) {
+recordMiss(int threadNum, double missStepCount) { // Modified by mvk1-nist
   assert(threadNum >= 0 && threadNum < numThreads);
 
   reduced = false;
@@ -191,6 +235,9 @@ recordMiss(int threadNum) {
   Matrix3x3<double> VPlusData(0, 0, 0, 0, 0, 0, 0, 0, 0);
   Matrix3x3<double> VMinusData(0, 0, 0, 0, 0, 0, 0, 0, 0);
 
+  totalSteps[threadNum] += missStepCount; // Added by mvk1-nist
+  missSteps[threadNum] += missStepCount; // Added by mvk1-nist
+
   numWalks[threadNum]++;
 
   updateVariance(threadNum,
@@ -198,7 +245,10 @@ recordMiss(int threadNum) {
 		 KPlusData, 
 		 KMinusData,
 		 VPlusData, 
-		 VMinusData);
+		 VMinusData,
+         missStepCount, // Modified by mvk1-nist
+         missStepCount, // Modified by mvk1-nist
+         false); // Modified by mvk1-nist
 }
 
 /// Perform a parallel reduction on the hit counts and other statistics and 
@@ -251,6 +301,15 @@ reduce() {
 
     VPlusVarianceReduced  += VPlusM2[threadNum] * nn1;
     VMinusVarianceReduced += VMinusM2[threadNum] * nn1;
+
+    totalStepsReduced += totalSteps[threadNum]; // Added by mvk1-nist
+    totalStepsVarianceReduced += totalStepsM2[threadNum] * nn1; // Added by mvk1-nist
+
+    hitStepsReduced += hitSteps[threadNum]; // Added by mvk1-nist
+    hitStepsVarianceReduced += hitStepsM2[threadNum] * nn1; // Added by mvk1-nist
+
+    missStepsReduced += missSteps[threadNum]; // Added by mvk1-nist
+    missStepsVarianceReduced += missStepsM2[threadNum] * nn1; // Added by mvk1-nist
   }
 
 #ifdef USE_MPI
@@ -436,7 +495,10 @@ updateVariance(int threadNum,
 	       Vector3<double> const & KPlusData, 
 	       Vector3<double> const & KMinusData,
 	       Matrix3x3<double> const & VPlusData, 
-	       Matrix3x3<double> const & VMinusData) {
+	       Matrix3x3<double> const & VMinusData,
+           double totalStepData, // Modified by mvk1-nist
+           double hitMissStepData, //  Modified by mvk1-nist
+           bool hitNotMiss) { // Modified by mvk1-nist
 
   updateItemVariance(hitMissData,
 		     numWalks[threadNum],
@@ -462,7 +524,51 @@ updateVariance(int threadNum,
 		     numWalks[threadNum],
 		     &(VMinusMean[threadNum]),
 		     &(VMinusM2[threadNum]));
+
+  updateItemVariance(totalStepData,
+             numWalks[threadNum],
+             &(totalStepsMean[threadNum]),
+             &(totalStepsM2[threadNum])); // Added by mvk1-nist
+
+  if(hitNotMiss) {
+      updateItemVariance(hitMissStepData,
+                 numWalks[threadNum],
+                 &(hitStepsMean[threadNum]),
+                 &(hitStepsM2[threadNum])); // Added by mvk1-nist
+  } else {
+      updateItemVariance(hitMissStepData,
+                 numWalks[threadNum],
+                 &(missStepsMean[threadNum]),
+                 &(missStepsM2[threadNum])); // Added by mvk1-nist
+  } // Added by mvk1-nist
+
+
+
 }
+
+Uncertain<double> 
+ResultsZeno::
+getTotalSteps() const {
+  assert(reduced);
+
+  return Uncertain<double>(totalStepsReduced, totalStepsVarianceReduced);
+} // Added by mvk1-nist
+
+Uncertain<double> 
+ResultsZeno::
+getHitSteps() const {
+  assert(reduced);
+
+  return Uncertain<double>(hitStepsReduced, hitStepsVarianceReduced);
+} // Added by mvk1-nist
+
+Uncertain<double> 
+ResultsZeno::
+getMissSteps() const {
+  assert(reduced);
+
+  return Uncertain<double>(missStepsReduced, missStepsVarianceReduced);
+} // Added by mvk1-nist
 
 double 
 ResultsZeno::
