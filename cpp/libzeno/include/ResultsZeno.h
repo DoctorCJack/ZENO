@@ -71,7 +71,7 @@ public:
 		 Vector3<double> const & startPoint,
 		 Vector3<double> const & endPoint,
 		 RandomNumberGenerator * randomNumberGenerator,
-         double hitStepCount); // Modified by mvk1-nist
+		 double hitStepCount); // Modified by mvk1-nist
 
   void recordMiss(int threadNum, double missSteps); // Modified by mvk1-nist
 
@@ -107,9 +107,9 @@ private:
 		      Vector3<double> const & KMinusData,
 		      Matrix3x3<double> const & VPlusData, 
 		      Matrix3x3<double> const & VMinusData,
-              double totalStepData, // Modified by mvk1-nist
-              double hitMissStepData, //  Modified by mvk1-nist
-              bool hitNotMiss); // Modified by mvk1-nist
+		      double totalStepData, // Modified by mvk1-nist
+		      double hitMissStepData, //  Modified by mvk1-nist
+		      bool hitNotMiss); // Modified by mvk1-nist
 
   template <class T>
   void updateItemVariance(T const & data,
@@ -202,7 +202,7 @@ recordHit(int threadNum,
 	  Vector3<double> const & startPoint,
 	  Vector3<double> const & endPoint,
 	  RandomNumberGenerator * randomNumberGenerator,
-      double hitStepCount) { // Modified by mvk1-nist
+	  double hitStepCount) { // Modified by mvk1-nist
 
   assert(threadNum >= 0 && threadNum < numThreads);
 
@@ -263,9 +263,9 @@ recordHit(int threadNum,
 		 KMinusData,
 		 VPlusData, 
 		 VMinusData,
-         hitStepCount, // Modified by mvk1-nist
-         hitStepCount, // Modified by mvk1-nist
-         true); // Modified by mvk1-nist
+		 hitStepCount, // Modified by mvk1-nist
+		 hitStepCount, // Modified by mvk1-nist
+		 true); // Modified by mvk1-nist
 
   if (saveHitPoints) {
     hitPointsGathered = false;

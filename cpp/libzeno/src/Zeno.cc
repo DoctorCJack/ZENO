@@ -573,7 +573,7 @@ Zeno::doWalkOnSpheresThread(ParametersWalkOnSpheres const * parameters,
       resultsZeno->recordHit(threadNum, 
 			     startPoint, endPoint,
 			     randomNumberGenerator,
-                 numSteps); // Modified by mvk1-nist
+			     numSteps); // Modified by mvk1-nist
     }
     else {
       resultsZeno->recordMiss(threadNum, numSteps); // Modified by mvk1-nist
