@@ -72,3 +72,8 @@
 *.exe
 *.out
 *.app
+
+# Added by mvk1-nist
+# CLion related files
+.idea
+cmake-build-debug-wsl
