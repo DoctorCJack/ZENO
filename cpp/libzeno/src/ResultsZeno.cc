@@ -247,7 +247,6 @@ recordMiss(int threadNum, double missStepCount) { // Modified by mvk1-nist
 		 VPlusData, 
 		 VMinusData,
 		 missStepCount, // Modified by mvk1-nist
-		 missStepCount, // Modified by mvk1-nist
 		 false); // Modified by mvk1-nist
 }
 
@@ -496,8 +495,7 @@ updateVariance(int threadNum,
 	       Vector3<double> const & KMinusData,
 	       Matrix3x3<double> const & VPlusData, 
 	       Matrix3x3<double> const & VMinusData,
-	       double totalStepData, // Modified by mvk1-nist
-	       double hitMissStepData, //  Modified by mvk1-nist
+	       double stepData, // Modified by mvk1-nist
 	       bool hitNotMiss) { // Modified by mvk1-nist
 
   updateItemVariance(hitMissData,
@@ -525,18 +523,18 @@ updateVariance(int threadNum,
 		     &(VMinusMean[threadNum]),
 		     &(VMinusM2[threadNum]));
 
-  updateItemVariance(totalStepData,
+  updateItemVariance(stepData,
              numWalks[threadNum],
              &(totalStepsMean[threadNum]),
              &(totalStepsM2[threadNum])); // Added by mvk1-nist
 
   if(hitNotMiss) {
-      updateItemVariance(hitMissStepData,
+      updateItemVariance(stepData,
                  numWalks[threadNum],
                  &(hitStepsMean[threadNum]),
                  &(hitStepsM2[threadNum])); // Added by mvk1-nist
   } else {
-      updateItemVariance(hitMissStepData,
+      updateItemVariance(stepData,
                  numWalks[threadNum],
                  &(missStepsMean[threadNum]),
                  &(missStepsM2[threadNum])); // Added by mvk1-nist

@@ -107,8 +107,7 @@ private:
 		      Vector3<double> const & KMinusData,
 		      Matrix3x3<double> const & VPlusData, 
 		      Matrix3x3<double> const & VMinusData,
-		      double totalStepData, // Modified by mvk1-nist
-		      double hitMissStepData, //  Modified by mvk1-nist
+		      double stepData, // Modified by mvk1-nist
 		      bool hitNotMiss); // Modified by mvk1-nist
 
   template <class T>
@@ -263,7 +262,6 @@ recordHit(int threadNum,
 		 KMinusData,
 		 VPlusData, 
 		 VMinusData,
-		 hitStepCount, // Modified by mvk1-nist
 		 hitStepCount, // Modified by mvk1-nist
 		 true); // Modified by mvk1-nist
 
