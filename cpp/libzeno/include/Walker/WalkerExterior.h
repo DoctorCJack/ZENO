@@ -65,7 +65,8 @@ class WalkerExterior {
   ~WalkerExterior();
 
   void walk(bool * hitObject, int * numSteps,
-	    Vector3<T> * startPoint, Vector3<T> * endPoint);
+	    Vector3<T> * startPoint, Vector3<T> * endPoint,
+        int expansion); // Modified by mvk1-nist
 
  private:
   RandomNumberGenerator * randomNumberGenerator;
@@ -125,7 +126,8 @@ WalkerExterior<T,
                RandomSpherePointGenerator,
                BiasedSpherePointGenerator>::
   walk(bool * hitObject, int * numSteps,
-       Vector3<T> * startPoint, Vector3<T> * endPoint) {
+       Vector3<T> * startPoint, Vector3<T> * endPoint,
+       int expansion) { // Modified by mvk1-nist
 
   *hitObject = false;
   *numSteps  = 0;
@@ -154,11 +156,23 @@ WalkerExterior<T,
       return;
     }
 
-    //Enlargening Variable
+    //Expanding Variable
     T delta; // Added by mvk1-nist
-    delta = shellThickness; // Constant case
-//    delta = 0.1 * minDistance; // Proportional case
-//    delta = randomNumberGenerator->getRandInRange(-1 * shellThickness, shellThickness); // Random case
+    switch(expansion) {
+        case 1: // Constant case
+            delta = shellThickness;
+            break;
+        case 2: // Proportional case
+            delta = 0.1 * minDistance;
+            break;
+        case 3: // Random case
+            delta = randomNumberGenerator->getRandInRange(-1 * shellThickness, shellThickness);
+            break;
+        default: // Default case
+            delta = 0;
+            break;
+    } // Added by mvk1-nist
+
     minDistance += delta;
 
     // Have to add overshoot cases here

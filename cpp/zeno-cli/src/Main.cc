@@ -609,6 +609,10 @@ parseCommandLine(int argc, char **argv,
   parametersLocal->setPrintCounts(args_info.print_counts_given);
   parametersLocal->setPrintBenchmarks(args_info.print_benchmarks_given);
 
+  if(args_info.expansion_given) {
+      parametersWalkOnSpheres->setExpansion(args_info.expansion_arg);
+  } // Added by mvk1-nist
+
   free(parser_params);
 }
 

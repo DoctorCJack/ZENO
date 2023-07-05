@@ -59,6 +59,7 @@ ParametersWalkOnSpheres::ParametersWalkOnSpheres()
     maxRunTimeWasSet(false),
     minTotalNumWalks(),
     saveSurfacePoints(false),
+    expansion(), // Added by mvk1-nist
     skinThickness(),
     skinThicknessWasSet(false),
     launchCenter(),
@@ -180,6 +181,16 @@ bool
 ParametersWalkOnSpheres::getSaveSurfacePoints() const {
   return saveSurfacePoints;
 }
+
+void
+ParametersWalkOnSpheres::setExpansion(int expansion) {
+    this->expansion = expansion;
+} // Added by mvk1-nist
+
+int
+ParametersWalkOnSpheres::getExpansion() const {
+    return expansion;
+} // Added by mvk1-nist
 
 void 
 ParametersWalkOnSpheres::setSkinThickness(double skinThickness) {

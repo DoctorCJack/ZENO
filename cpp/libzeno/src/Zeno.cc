@@ -566,7 +566,8 @@ Zeno::doWalkOnSpheresThread(ParametersWalkOnSpheres const * parameters,
     Vector3<double> endPoint;
 
     walker.walk(&hitObject, &numSteps,
-		&startPoint, &endPoint);
+		&startPoint, &endPoint,
+        parameters->getExpansion()); // Modified by mvk1-nist
 
 
     if (hitObject) {

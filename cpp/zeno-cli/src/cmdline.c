@@ -124,6 +124,7 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->interior_points_file_given = 0 ;
   args_info->print_counts_given = 0 ;
   args_info->print_benchmarks_given = 0 ;
+  args_info->expansion_given = 0 ; // Added by mvk1-nist
 }
 
 static
@@ -152,6 +153,8 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->surface_points_file_orig = NULL;
   args_info->interior_points_file_arg = NULL;
   args_info->interior_points_file_orig = NULL;
+  args_info->expansion_arg = 0; // Added by mvk1-nist
+  args_info->expansion_orig = NULL; // Added by mvk1-nist
   
 }
 
@@ -356,6 +359,9 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "print-counts", 0, 0 );
   if (args_info->print_benchmarks_given)
     write_into_file(outfile, "print-benchmarks", 0, 0 );
+  if(args_info->expansion_given)
+      write_into_file(outfile, "expansion", args_info->expansion_orig, 0); // Added by mvk1-nist
+
   
 
   i = EXIT_SUCCESS;
@@ -671,6 +677,7 @@ cmdline_parser_internal (
         { "interior-points-file",	1, NULL, 0 },
         { "print-counts",	0, NULL, 0 },
         { "print-benchmarks",	0, NULL, 0 },
+        { "expansion", 1, NULL, 0}, // Added by mvk1-nist
         { 0,  0, 0, 0 }
       };
 
@@ -926,6 +933,16 @@ cmdline_parser_internal (
               goto failure;
           
           }
+          else if (strcmp (long_options[option_index].name, "expansion") == 0) // Added by mvk1-nist
+          {
+              if (update_arg( (void *)&(args_info->expansion_arg),
+                              &(args_info->expansion_orig), &(args_info->expansion_given),
+                              &(local_args_info.expansion_given), optarg, 0, 0, ARG_INT,
+                              check_ambiguity, override, 0, 0,
+                              "expansion", '-',
+                              additional_error))
+                  goto failure;
+          } // Added by mvk1-nist
           
           break;
         case '?':	/* Invalid option.  */

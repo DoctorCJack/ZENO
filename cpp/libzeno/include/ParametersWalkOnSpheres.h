@@ -87,6 +87,9 @@ public:
 
   void setSaveSurfacePoints(bool saveSurfacePoints);
   bool getSaveSurfacePoints() const;
+
+  void setExpansion(int expansion); // Added by mvk1-nist
+  int getExpansion() const; // Added by mvk1-nist
   
   void setSkinThickness(double skinThickness);
   double getSkinThickness() const;
@@ -129,6 +132,8 @@ private:
   long long minTotalNumWalks;
 
   bool saveSurfacePoints;
+
+  int expansion; // Added by mvk1-nist
 
   // .bod parameters
 

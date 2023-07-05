@@ -102,6 +102,8 @@ struct gengetopt_args_info
   const char *interior_points_file_help; /**< @brief Name of file for writing the interior sample points help description.  */
   const char *print_counts_help; /**< @brief Print statistics related to counts of hit points help description.  */
   const char *print_benchmarks_help; /**< @brief Print detailed RAM and timing information help description.  */
+  char * expansion_orig; /**< @brief Which expansion option was selected.  */ // Added by mvk1-nist
+  char expansion_arg; /**< @brief Which expansion option was selected.  */ // Added by mvk1-nist
   
   unsigned int help_given ;	/**< @brief Whether help was given.  */
   unsigned int version_given ;	/**< @brief Whether version was given.  */
@@ -122,6 +124,7 @@ struct gengetopt_args_info
   unsigned int interior_points_file_given ;	/**< @brief Whether interior-points-file was given.  */
   unsigned int print_counts_given ;	/**< @brief Whether print-counts was given.  */
   unsigned int print_benchmarks_given ;	/**< @brief Whether print-benchmarks was given.  */
+  unsigned int expansion_given ; /**< @brief Whether an expansion option was given.  */ // Added by mvk1-nist
 
 } ;
 
