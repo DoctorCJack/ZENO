@@ -1078,6 +1078,10 @@ printParameters(ParametersWalkOnSpheres const & parametersWalkOnSpheres,
 		     parametersResults.getBuoyancyFactor(),
 		     csvItems);
   }
+
+  printExactScalar("Expansion option", "expansion_option", "",
+                   parametersWalkOnSpheres.getExpansion(),
+                   csvItems); // Added by mvk1-nist
 }
 
 /// Prints the results.  Results that were not computed are not printed.
