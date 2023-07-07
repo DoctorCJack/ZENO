@@ -74,7 +74,7 @@ def get_bod_seq(file,nohydrogenflag):
                 # ' 1.00  -1.2    3.5  ' -> "1.00 -1.2 3.5"
                 cords = " ".join(map(str.strip, cords))
                 atom = look_up_table[atom]
-                bod_line = f'S {cords} {atom}\n'
+                bod_line = f'SPHERE {cords} {atom}\n' # Temp change for debugging
                 bod_file += bod_line
 
     return bod_file
