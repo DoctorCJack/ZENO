@@ -80,13 +80,13 @@ private:
   static const unsigned int numFormFactors = 81;
 
   Result<Uncertain<double> > 
-  computeTotalSteps(Uncertain<double> totalSteps) const; // Added by mvk1-nist
+  computeTotalSteps(Uncertain<double> totalSteps, double numWalks) const; // Added by mvk1-nist
 
   Result<Uncertain<double> > 
-  computeHitSteps(Uncertain<double> hitSteps) const; // Added by mvk1-nist
+  computeHitSteps(Uncertain<double> hitSteps, Uncertain<double> numHits) const; // Added by mvk1-nist
 
   Result<Uncertain<double> > 
-  computeMissSteps(Uncertain<double> missSteps) const; // Added by mvk1-nist
+  computeMissSteps(Uncertain<double> missSteps, Uncertain<double> numMisses) const; // Added by mvk1-nist
 
   Result<Uncertain<double> > 
   computeCapacitance(Uncertain<double> const & t, 

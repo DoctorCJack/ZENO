@@ -128,11 +128,11 @@ ResultsCompiler::compile(ResultsZeno const * resultsZeno,
     results->w.set("w", "w", w,
 		   Units::getName(parameters->getLengthScaleUnit()));
 
-    results->totalSteps = computeTotalSteps(resultsZeno->getTotalSteps()); // Added by mvk1-nist
+    results->totalSteps = computeTotalSteps(resultsZeno->getTotalSteps(), numWalks); // Added by mvk1-nist
 
-    results->hitSteps = computeHitSteps(resultsZeno->getHitSteps()); // Added by mvk1-nist
+    results->hitSteps = computeHitSteps(resultsZeno->getHitSteps(), numZenoHits); // Added by mvk1-nist
 
-    results->missSteps = computeMissSteps(resultsZeno->getMissSteps()); // Added by mvk1-nist
+    results->missSteps = computeMissSteps(resultsZeno->getMissSteps(), (numWalks - numZenoHits)); // Added by mvk1-nist
 
     results->capacitance =
       computeCapacitance(t,
@@ -292,39 +292,39 @@ ResultsCompiler::compile(ResultsZeno const * resultsZeno,
 
 Result<Uncertain<double> > 
 ResultsCompiler::
-computeTotalSteps(Uncertain<double> totalStepCount) const {
+computeTotalSteps(Uncertain<double> totalStepCount, double numWalks) const {
 
   Result<Uncertain<double> >
     result("Total steps",
            "total_steps",
-            totalStepCount,
-            "steps");
+           (totalStepCount / numWalks),
+           "steps");
   
   return result;
 } // Added by mvk1-nist
 
 Result<Uncertain<double> > 
 ResultsCompiler::
-computeHitSteps(Uncertain<double> hitStepCount) const {
+computeHitSteps(Uncertain<double> hitStepCount, Uncertain<double> numHits) const {
 
   Result<Uncertain<double> >
     result("Hit steps",
            "hit_steps",
-            hitStepCount,
-            "steps");
+           (hitStepCount / numHits),
+           "steps");
   
   return result;
 } // Added by mvk1-nist
 
 Result<Uncertain<double> > 
 ResultsCompiler::
-computeMissSteps(Uncertain<double> missStepCount) const {
+computeMissSteps(Uncertain<double> missStepCount, Uncertain<double> numMisses) const {
 
   Result<Uncertain<double> >
     result("Miss steps",
            "miss_steps",
-            missStepCount,
-            "steps");
+           (missStepCount / numMisses),
+           "steps");
   
   return result;
 } // Added by mvk1-nist
