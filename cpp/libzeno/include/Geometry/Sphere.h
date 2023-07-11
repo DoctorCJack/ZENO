@@ -146,7 +146,7 @@ Sphere<T>::setRadius(T radius) {
 template <class T>
 T 
 Sphere<T>::getRadius() const {
-  return radius; // This comment is here to test pushing to GitHub
+  return radius;
 }
 
 /// Returns the maximum coordinate value of any point on the sphere along the
