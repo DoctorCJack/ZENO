@@ -159,18 +159,65 @@ WalkerExterior<T,
     //Expanding Variable
     T delta; // Added by mvk1-nist
     switch(expansion) {
-        case 1: // Constant case
-            delta = shellThickness;
-            break;
-        case 2: // Proportional case
-            delta = 0.1 * minDistance;
-            break;
-        case 3: // Random case
-            delta = randomNumberGenerator->getRandInRange(-1 * shellThickness, shellThickness);
-            break;
-        default: // Default case
+        case 0: // Original case (previously default)
             delta = 0;
             break;
+        case 1: // Constant case 1e (previously 1)
+            delta = shellThickness;
+            break;
+        case 2: // Constant case 2e
+            delta = shellThickness * 2;
+            break;
+        case 3: // Constant case 3e
+            delta = shellThickness * 3;
+            break;
+        case 4: // Constant case 4e
+            delta = shellThickness * 4;
+            break;
+        case 5: // Constant case 5e
+            delta = shellThickness * 5;
+            break;
+        case 6: // Constant case 0.5e
+            delta = shellThickness * 0.5;
+            break;
+        case 7: // Constant case 0.25e
+            delta = shellThickness * 0.25;
+            break;
+        case 8: // Constant case 0.1e
+            delta = shellThickness * 0.1;
+            break;
+        case 9: // Proportional case 10% (previously 2)
+            delta = 0.1 * minDistance;
+            break;
+        case 10: // Proportional case 5%
+            delta = 0.05 * minDistance;
+            break;
+        case 11: // Proportional case 4%
+            delta = 0.04 * minDistance;
+            break;
+        case 12: // Proportional case 3%
+            delta = 0.03 * minDistance;
+            break;
+        case 13: // Proportional case 2%
+            delta = 0.02 * minDistance;
+            break;
+        case 14: // Proportional case 1%
+            delta = 0.01 * minDistance;
+            break;
+        case 15: // Proportional case 0.5%
+            delta = 0.005 * minDistance;
+            break;
+        case 16: // Proportional case 0.25%
+            delta = 0.0025 * minDistance;
+            break;
+        case 17: // Proportional case 0.1%
+            delta = 0.001 * minDistance;
+            break;
+        case 18: // Random case uniform between -e and +e (previously 3)
+            delta = randomNumberGenerator->getRandInRange(-1 * shellThickness, shellThickness);
+            break;
+        default: // No option
+            exit(1);
     } // Added by mvk1-nist
 
     minDistance += delta;
