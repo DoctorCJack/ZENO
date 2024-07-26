@@ -159,34 +159,34 @@ WalkerExterior<T,
     //Expanding Variable
     T delta; // Added by mvk1-nist
     switch(expansion) {
-        case 0: // Original case (previously default)
+        case 0: // Original case
             delta = 0;
             break;
-        case 1: // Constant case 1e (previously 1)
-            delta = shellThickness;
-            break;
-        case 2: // Constant case 2e
-            delta = shellThickness * 2;
-            break;
-        case 3: // Constant case 3e
-            delta = shellThickness * 3;
-            break;
-        case 4: // Constant case 4e
-            delta = shellThickness * 4;
-            break;
-        case 5: // Constant case 5e
-            delta = shellThickness * 5;
-            break;
-        case 6: // Constant case 0.5e
-            delta = shellThickness * 0.5;
-            break;
-        case 7: // Constant case 0.25e
-            delta = shellThickness * 0.25;
-            break;
-        case 8: // Constant case 0.1e
+        case 1: // Constant case 0.1e
             delta = shellThickness * 0.1;
             break;
-        case 9: // Proportional case 10% (previously 2)
+        case 2: // Constant case 0.25e
+            delta = shellThickness * 0.25;
+            break;
+        case 3: // Constant case 0.5e
+            delta = shellThickness * 0.5;
+            break;
+        case 4: // Constant case 1e
+            delta = shellThickness * 1;
+            break;
+        case 5: // Constant case 2e
+            delta = shellThickness * 2;
+            break;
+        case 6: // Constant case 3e
+            delta = shellThickness * 3;
+            break;
+        case 7: // Constant case 4e
+            delta = shellThickness * 4;
+            break;
+        case 8: // Constant case 5e
+            delta = shellThickness * 5;
+            break;
+        case 9: // Proportional case 10%
             delta = 0.1 * minDistance;
             break;
         case 10: // Proportional case 5%
@@ -213,18 +213,59 @@ WalkerExterior<T,
         case 17: // Proportional case 0.1%
             delta = 0.001 * minDistance;
             break;
-        case 18: // Random case uniform between -e and +e (previously 3)
-            delta = randomNumberGenerator->getRandInRange(-1 * shellThickness, shellThickness);
+        case 18: // Random case uniform between -0.5e and +0.5e
+            delta = randomNumberGenerator->getRandInRange(-0.5 * shellThickness, 0.5 * shellThickness);
+            break;
+        case 19: // Random case uniform between -e and +e
+            delta = randomNumberGenerator->getRandInRange(-1 * shellThickness, 1 * shellThickness);
+            break;
+        case 20: // Random case uniform between -2e and +2e
+            delta = randomNumberGenerator->getRandInRange(-2 * shellThickness, 2 * shellThickness);
+            break;
+        case 21: // Random case uniform between 0 and +0.5e
+            delta = randomNumberGenerator->getRandInRange(0, 0.5 * shellThickness);
+            break;
+        case 22: // Random case uniform between 0 and +e
+            delta = randomNumberGenerator->getRandInRange(0, 1 * shellThickness);
+            break;
+        case 23: // Random case uniform between 0 and +2e
+            delta = randomNumberGenerator->getRandInRange(0, 2 * shellThickness);
+            break;
+        case 24: // Random case normal with mean 0 and sd 0.5e
+            delta = 0.5 * shellThickness * std::sqrt(-2 * std::log(randomNumberGenerator->getRandInRange(0, 1))) * std::cos(2 * M_PI * randomNumberGenerator->getRandInRange(0, 1));
+            break;
+        case 25: // Random case normal with mean 0 and sd 1e
+            delta = 1 * shellThickness * std::sqrt(-2 * std::log(randomNumberGenerator->getRandInRange(0, 1))) * std::cos(2 * M_PI * randomNumberGenerator->getRandInRange(0, 1));
+            break;
+        case 26: // Random case normal with mean 0 and sd 2e
+            delta = 2 * shellThickness * std::sqrt(-2 * std::log(randomNumberGenerator->getRandInRange(0, 1))) * std::cos(2 * M_PI * randomNumberGenerator->getRandInRange(0, 1));
+            break;
+        case 27: // Piecewise case (Far: Proportional case 2%; Close: Constant case 1e; Boundary: 4e)
+            if (minDistance > 4 * shellThickness) {
+                delta = 0.02 * minDistance;
+            } else {
+                delta = shellThickness * 1;
+            }
+            break;
+        case 28: // Piecewise case (Far: Proportional case 2%; Close: Constant case 1e; Boundary: 16e)
+            if (minDistance > 16 * shellThickness) {
+                delta = 0.02 * minDistance;
+            } else {
+                delta = shellThickness * 1;
+            }
+            break;
+        case 29: // Piecewise case (Far: Proportional case 2%; Close: Constant case 1e; Boundary: 64e)
+            if (minDistance > 64 * shellThickness) {
+                delta = 0.02 * minDistance;
+            } else {
+                delta = shellThickness * 1;
+            }
             break;
         default: // No option
             exit(1);
     } // Added by mvk1-nist
 
     minDistance += delta;
-
-    // Have to add overshoot cases here
-    // Currently only checks undershoot and interior case
-    // Overshoot should be negligable
 
     (*numSteps)++;
 
